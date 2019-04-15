@@ -1,0 +1,141 @@
+Abbreviations and Definitions
+-----------------------------
+
+Player Positions
+LS: left striker
+ST: stiker
+RS: right striker
+LW: left wing
+LF: left forward
+CF: center forward
+RF: right forward
+RW: right wing
+LAM: left attacking midfielder
+CAM: center attacking midfielder
+RAM: right attacking midfielder
+LM: left midfield
+LCM: left center forward
+CM: center forward
+RCM: right center forward
+RM: right midfield
+LWB: left wing back
+LDM: left defensive midfielder
+CDM: central defensive midfielder
+RDM: right defensive midfielder
+RWB: right wing back
+LB: left back
+LCB: left center back
+CB: center back
+RCB: right center back
+RB: right back
+
+
+Player Attributes
+-----------------
+
+Crossing: 
+	- Skills
+	- The accuracy and the quality of a player's crosses
+	- Cross is a medium-to-long-range pass from a wide area of the field towards the center of the field near the opponent's goal
+Finishing: 
+	- Skills
+	- The ability of a player to score (ability for finishing)
+	- Finishing is how well they can finish a opportunity with a score
+Heading Accuracy (HEA): 
+	- Skills
+	- A player's accuracy when using the head to pass, shoot or clear the ball
+Short Passing: 
+	- Skills
+	- A player's accuracy for the short passes
+	- Short pass is a pass which travels a short distance down the field to reach its target
+Volleys:
+	- Skills
+	- A player's ability for performing volleys
+	- Volley is a kick of the ball made before it touches the ground
+Dribbling (DRI): 
+	- Skills
+	- A player's ability to carry the ball and past an opponent while being in control
+Curve (CRV):
+	- Skills
+	- A player's ability to curve the ball when passing and shooting
+FK Accuracy (FKA - Free Kick Accuracy): 
+	- Skills
+	- A player's accuracy for taking the Free Kicks
+Long Passing:
+	- Skills
+	- A player's accuracy for the long and aerial passes
+Ball Control: 
+	- Skills
+	- The ability of a player to control the ball on the pitch
+Acceleration: 
+	- Physical
+	- The increment of a player's running speed (sprint speed) on the pitch
+	- The acceleration rate specifies how fast a player can reach their maximum sprint speed
+Sprint Speed:
+	- Physical
+	- The speed rate of a player's sprinting (running)
+Agility: 
+	- Physical
+	- How quick and graceful a player is able to control the ball
+	- Depends on both mental and physical skills of the player
+Reactions (REA):
+	- Physical
+	- The acting speed of a player in response to the situations happening around them
+Balance: 
+	- Physical
+	- The even distribution of enabling a player to remain upright and steady when running, carrying and controlling the ball
+Shot Power (PWR): 
+	- Skills
+	- The strength of a player's shootings
+Jumping: 
+	- Physical
+	- A player's ability and quality for jumping form the surface for headers
+Stamina (STA): 
+	- Physical
+	- A player's ability to sustain prolonged physical or mental effort in a match
+Strength: 
+	- Physical
+	- The quality or state of being physically strong of a player
+Long Shots:
+	- Skills
+	- A player's accuracy for the shots taking from long distances
+Aggression: 
+	- Mental
+	- The aggression level of a player on pushing, pulling and tackling
+Interceptions: 
+	- Mental
+	- A player's capability to intercept the ball - to catch the opposing team's passes
+Positioning (POS):
+	- Mental
+	- How well a player is able to perform the positioning on the field as a player or on the goal line as a goalkeeper
+Vision: 
+	- Mental
+	- A player's mental awareness about his teammates' positioning, for passing the ball to them
+Penalties (PEN): 
+	- Skills
+	- A player's accuracy for the shots taking from the penalty kicks
+Composure: 
+	- Mental
+	- A player's state or feeling of being calm and controlling their frustration in matches
+Marking: 
+	- Mental
+	- A player's capability to makr an opposition player or players to prevent them from taking control of the ball
+Standing Tackle: 
+	- Skills
+	- The ability of performing standing tackle of a player
+	- Standing tackle (or short tackle) is a tackle in which the tackler performs a tackle while standing 
+Sliding Tackle:
+	- Skills
+	- The ability of performing sliding tackle of a player in a match
+	- Sliding tackle (or slide tackle) is a tackle in which the tackler uses his leg or legs to slide to his opponent's body to take the ball away from them
+	
+GK Diving (DIV):
+	- A player's ability to dive as a goalkeeper
+GK Handling (HAN):
+	- A player's ability to handle the ball and hold onto it using hteir hands as a goalkeeper
+GK Kicking (KIC):
+	- A player's ability to kick the ball as a goalkeeper
+GK Position (POS):
+	- How well a player is able to perform the positioning on the field as a player or on the goal line as a goalkeeper
+GK Reflexes (REF):
+	- A player's ability and speed to react (reflex) for catching/saving the ball as a goalkeeper
