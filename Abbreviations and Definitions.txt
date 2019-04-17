@@ -17,9 +17,9 @@ LAM: left attacking midfielder
 CAM: center attacking midfielder
 RAM: right attacking midfielder
 LM: left midfield
-LCM: left center forward
-CM: center forward
-RCM: right center forward
+LCM: left center midfield
+CM: center midfield
+RCM: right center midfield
 RM: right midfield
 LWB: left wing back
 LDM: left defensive midfielder
