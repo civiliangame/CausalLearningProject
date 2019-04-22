@@ -44,10 +44,13 @@ with open("scrapingresults.csv", mode="w", encoding="utf-8") as file:
         soup = BeautifulSoup(r.content, "lxml")
 
         teamName = (soup.find("div", {"class": "info"}).get_text())
-        for tr in soup.find("tbody").find_all("tr"):
+        mb2 = soup.find("div", {"class": "wrapper"}).find("div", {"class": "mb-2"})
+        print(mb2)
+        for tr in mb2.find("tbody").find_all("tr"):
             td = tr.find_all("td")
             #print(td)
-            output.writerow([teamName, td[1].get_text(),td[3].get_text(),td[4].get_text(),td[5].get_text(),td[6].get_text(),td[7].get_text(),td[8].get_text(),td[9].get_text(),td[10].get_text()])
+            print([teamName.replace("\n", ""), td[2].get_text(),td[3].get_text(),td[4].get_text(),td[5].get_text(),td[6].get_text(),td[7].get_text(),td[8].get_text(),td[9].get_text(),td[10].get_text()])
+            output.writerow([teamName.replace("\n", ""), td[2].get_text(),td[3].get_text(),td[4].get_text(),td[5].get_text(),td[6].get_text(),td[7].get_text(),td[8].get_text(),td[9].get_text(),td[10].get_text()])
             # tempcounter =
             # for i in range(13):
             #     if i == 2 or i == 11 or i == 12:
