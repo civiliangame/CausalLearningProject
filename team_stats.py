@@ -39,12 +39,18 @@ class Team:
 		self.players[player.name] = player
 
 	def aggregate_stats(self):
-		results = {}
+		if '2018' not in self.years:
+			return None
+
+		results = {'win_rate': '>=50%' if self.years['2018'].wins >= self.years['2018'].loss else '<50%'}
 		for stat in Player.stat_names:
 			best_player_name, best_player = max(self.players.items(), key=lambda name, player: player.abilities[stat])
-			team_avg = np.mean(player.abilities[stat] for name, player in self.players.items() if name != best_player_name)
-			result[stat] = np.mean(best_player.abilities[stat], team_avg)
-	    return results
+			team_avg = np.mean(player.abilities[stat] for name, player in self.players.items() if name != best_player_name and not player.goalkeeper)
+			if stat[:3] is 'GK':
+				results[stat] = best_player.abilities[stat]
+			else:
+				results[stat] = np.mean(best_player.abilities[stat], team_avg)
+		return results
 
 	def w2file(self, wfile):
 		for key, y in self.years.items():
@@ -76,7 +82,7 @@ class Player:
 		self.team = stats['Club']
 
 		self.abilities = {}
-		for stat in stat_names:
+		for stat in Player.stat_names:
 			self.abilities[stat] = stats[stat]
 
 		if stats['Position'] is 'GK':
@@ -93,6 +99,8 @@ def add_year(teams, name, year):
 	teams[name].years[year] = Team.Year(year)
 	return
 
+def get_teams():
+	return teams
 
 """
 Create FIFA Team from FiveThirtyEight data
