@@ -6,6 +6,7 @@ import unidecode as uni
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import cross_val_score
 
 
 """
@@ -37,11 +38,11 @@ def name_mapping(player_data, team_data):
 
     mapping = {}
     for player_team in players:
-        #add any exact matches
+        # Add any exact matches
         if player_team in teams:
             mapping[player_team] = player_team
 
-        #add any accents
+        # Add any matches after eliminating accents
         for team_team in teams:
             if uni.unidecode(team_team) == uni.unidecode(player_team):
                 if team_team not in mapping:
@@ -79,8 +80,42 @@ def match_teams(team_data, player_data):
     return team_df
 
 
-def bin_work_rate(num_bins, work_rate):
-    pass
+"""
+Determines the values associated with each bin (in the histogram) of the work rate
+
+Arguments:
+    num_bins        number of bins for the histogram
+    data            player data (continuous) in the team (Python list or NumPy array)
+
+Return:
+    bin_val         values (average of the edges of the bin) corresponding to each bin (NumPy array)
+    binned_data     binned player data (continuous --> nominal) in the team (NumPy array)
+"""
+def bin_data(num_bins, data):
+    np_data = data
+
+    # If data is a Python list, convert it to NumPy array
+    if isinstance(data, list)
+        np_data = np.array(data)
+
+    # Make histogram from data to get histogram bins
+    hist, bin_edges = np.histogram(np_data, bins=num_bins)
+    bin_val = np.zeros(bin_edges.size - 1)
+    for i in range(bin_edges.size - 1):
+        bin_val[i] = (bin_edges[i] +  bin_edges[i + 1]) / 2
+
+    # Convert data (continuous) to their corresponding bin (nominal) values
+    binned_data = np.zeros(np_data.size)
+    for i in range(np_data.size):
+        for j in range(bin_edges.size - 1):
+            if bin_edges[j] < np_data[i] and np_data[i] <= bin_edges[j + 1]:
+                binned_data[i] = bin_val[j]
+
+            # Edge case for left-most bin
+            if j is 0 and bin_edges[j] == np_data[i]:
+                binned_data[i] = bin_val[j]
+
+    return bin_val, binned_data
 
 
 """
@@ -97,26 +132,49 @@ def logreg(data):
 """
 Least Mean Square Error
 """
-def mmse(data):
-    x = mean_squared_error(data, data_pred)
-
+def lmse(data_true, data_pred):
+    x = mean_squared_error(data_true, data_pred)
     return x
 
 
+
 """
+IP weighting
 """
-def ip_weighting(population, used_stat):
+def ip_weighting(pop_data, used_stat, stat_bins, numerator_prob):
 
     # Calculate weight
     '''
     Pseudocode:
         1. Create a new array to hold errything
         2. Condtion on League
-        3. Condition on work Rate
-        4. Condition on statistic
-        5. for each statistic
-
+            -> get p(league)
+        3. Condition on work rate
+            -> p(Work Rate)
+            -> p(Work Rate | League)
+        4. Condition on statistic bins
+            -> p(stat) = 1
+        5. for each statisticample, the statement data[‘first_name’] == ‘Antonio’] produces a Pandas Series with a T
+            -> mult. total by p(outcome)
+            -> weight = p_we_want / p(a|covariates)
     '''
+    # IP will have enough rows to hold the entire population * num unique work rates * num unique leagues
+    leagues = pop_data.league.unique()
+    rates = pop_data.work_rate.unique()
+    ip = np.empty(pop.shape[0] * leagues.shape[0] * rates.shape[0], 3)
+
+    index_count = 0
+    # Condition on leagues
+    for lg in leagues:
+        lg_data = pop_data.loc[pop_data['league'] == lg]
+
+        # Condition on work rate
+        for rt in rates:
+            rt_data = lg_data.loc[lg_data['work_rate'] == rt]
+            ip[index_count] = j;alksdjfkjdsf
+            index_count += 1
+
+
     return
 
 
@@ -132,6 +190,8 @@ def model_data(choice, data):
         logreg(data)
     elif choice is 'lmse':
         lmse(data)
+    else:
+        print("There's a problem with your model, sir/ma'am")
 
     return
 

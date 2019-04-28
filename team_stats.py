@@ -43,9 +43,15 @@ class Team:
 			return None
 
 		results = {'win_rate': '>=50%' if self.years['2018'].wins >= (self.years['2018'].loss + .5 * self.years['2018'].draws) else '<50%'}
+
+		# Aggregate players' stats
 		for stat in Player.stat_names:
 			best_player_name, best_player = max(self.players.items(), key=lambda name, player: player.abilities[stat])
 			results[stat] = best_player.abilities[stat]
+
+		# Aggregate players' work rate
+		results['work_rate'] = np.mean(self.players.items(), key-lambda, name, player: player.work_rate)
+
 		return results
 
 	def w2file(self, wfile):
@@ -110,6 +116,8 @@ class Player:
 		elif work_rate[1] is 'Low':
 			self.defensive_work_rate = 1
 
+		self.work_rate = (self.attacking_work_rate + self.defensive_work_rate) / 2
+
 
 def add_team(teams, name, league):
 	teams[name] = Team(name, league)
@@ -121,6 +129,7 @@ def add_year(teams, name, year):
 
 def get_teams():
 	return teams
+
 
 """
 Create FIFA Team from FiveThirtyEight data
