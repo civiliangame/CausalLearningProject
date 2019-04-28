@@ -42,17 +42,14 @@ class Team:
 		if '2018' not in self.years:
 			return None
 
-		results = {'win_rate': '>=50%' if self.years['2018'].wins >= self.years['2018'].loss else '<50%'}
+		results = {'win_rate': '>=50%' if self.years['2018'].wins >= (self.years['2018'].loss + .5 * self.years['2018'].draws) else '<50%'}
 		for stat in Player.stat_names:
 			best_player_name, best_player = max(self.players.items(), key=lambda name, player: player.abilities[stat])
-			team_avg = np.mean(player.abilities[stat] for name, player in self.players.items() if name != best_player_name and not player.goalkeeper)
-			if stat[:3] is 'GK':
-				results[stat] = best_player.abilities[stat]
-			else:
-				results[stat] = np.mean(best_player.abilities[stat], team_avg)
+			results[stat] = best_player.abilities[stat]
 		return results
 
 	def w2file(self, wfile):
+		wfile.write("Year,League,Team,Wins,Losses,Draws\n")
 		for key, y in self.years.items():
 			twrite = key + ","
 			twrite += self.league + ","
@@ -81,14 +78,37 @@ class Player:
 		self.name = stats['Name']
 		self.team = stats['Club']
 
+		# Get player's stats
 		self.abilities = {}
 		for stat in Player.stat_names:
 			self.abilities[stat] = stats[stat]
 
+		# Get whether player is goalkeeper or not
 		if stats['Position'] is 'GK':
 			self.goalkeeper = True
 		else:
 			self.goalkeeper = False
+
+		# Get player's preferred position
+		self.position = stats['Position']
+
+		# Get player's work rate
+		work_rate = stats['Work Rate']
+		work_rate = work_rate.split("/")
+
+		if work_rate[0] is 'High':
+			self.attacking_work_rate = 3
+		elif work_rate[0] is 'Medium':
+			self.attacking_work_rate = 2
+		elif work_rate[0] is 'Low':
+			self.attacking_work_rate = 1
+
+		if work_rate[1] is 'High':
+			self.defensive_work_rate = 3
+		elif work_rate[1] is 'Medium':
+			self.defensive_work_rate = 2
+		elif work_rate[1] is 'Low':
+			self.defensive_work_rate = 1
 
 
 def add_team(teams, name, league):
