@@ -34,7 +34,7 @@ dataset. The mapping is incomplete, and may be expanded later.
 """
 def name_mapping(player_data, team_data):
     players = player_data['Club'].drop_duplicates().dropna().to_numpy()
-    teams = team_data[2].drop_duplicates().dropna().to_numpy()
+    teams = np.array([x for x in team_data.keys()])
 
     mapping = {}
     for player_team in players:
@@ -48,7 +48,7 @@ def name_mapping(player_data, team_data):
                 if team_team not in mapping:
                     mapping[team_team] = player_team
 
-        return mapping
+    return mapping
 
 
 """
@@ -73,9 +73,9 @@ def match_teams(team_data, player_data):
 
     team_df = pd.DataFrame()
     for team in team_data:
-        if team.players != {}:
-            new_row = pd.Series(team.aggregate_stats())
-            team_df.append(new_row)
+        if team_data[team].players != {}:
+            new_row = pd.Series(team_data[team].aggregate_stats())
+            team_df = team_df.append(new_row, ignore_index=True)
 
     return team_df
 
@@ -199,6 +199,7 @@ def model_data(choice, data):
 def main():
     fifa_player_df, fifa_team = read_data()
     aggregated_data = match_teams(fifa_team, fifa_player_df)
+    print(aggregated_data)
 
 
 if __name__ == "__main__":
