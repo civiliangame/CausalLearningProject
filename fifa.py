@@ -95,7 +95,7 @@ def bin_data(num_bins, data):
     np_data = data
 
     # If data is a Python list, convert it to NumPy array
-    if isinstance(data, list)
+    if isinstance(data, list):
         np_data = np.array(data)
 
     # Make histogram from data to get histogram bins
@@ -171,7 +171,7 @@ def ip_weighting(pop_data, used_stat, stat_bins, numerator_prob):
         # Condition on work rate
         for rt in rates:
             rt_data = lg_data.loc[lg_data['work_rate'] == rt]
-            ip[index_count] = j;alksdjfkjdsf
+            ip[index_count] = j
             index_count += 1
 
 

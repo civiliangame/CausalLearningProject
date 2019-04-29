@@ -49,14 +49,8 @@ class Team:
 			best_player_name, best_player = max(self.players.items(), key=lambda player: player[1].abilities[stat])
 			results[stat] = best_player.abilities[stat]
 
-<<<<<<< HEAD
-		# Aggregate players' work rate
-		results['work_rate'] = np.mean(self.players.items(), key-lambda, name, player: player.work_rate)
-
-=======
 		results['work_rate'] = np.mean([np.mean([player.defensive_work_rate, player.attacking_work_rate]) for _, player in self.players.items()])
 		results['name'] = self.name
->>>>>>> c197c29c23056a6f35870d4162f6cdac625ecf6f
 		return results
 
 	def w2file(self, wfile):
