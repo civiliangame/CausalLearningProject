@@ -199,6 +199,10 @@ def model_data(choice, data):
 def main():
     fifa_player_df, fifa_team = read_data()
     aggregated_data = match_teams(fifa_team, fifa_player_df)
+    mean_work_rate = np.mean(aggregated_data['work_rate'])
+    aggregated_data.loc[aggregated_data['work_rate'] < mean_work_rate, 'work_rate'] = 0
+    aggregated_data.loc[aggregated_data['work_rate'] >= mean_work_rate, 'work_rate'] = 1
+
     aggregated_data.to_csv('aggregated_data.csv')
 
 

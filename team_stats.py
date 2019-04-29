@@ -51,6 +51,7 @@ class Team:
 
 		results['work_rate'] = np.mean([np.mean([player.defensive_work_rate, player.attacking_work_rate]) for _, player in self.players.items()])
 		results['name'] = self.name
+		results['league'] = self.league
 		return results
 
 	def w2file(self, wfile):
