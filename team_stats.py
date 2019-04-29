@@ -44,10 +44,11 @@ class Team:
 
 		results = {'win_rate': '>=50%' if self.years['2018'].wins >= (self.years['2018'].loss + .5 * self.years['2018'].draws) else '<50%'}
 		for stat in Player.stat_names:
-			best_player_name, best_player = max(self.players.items(), key=lambda name, player: player.abilities[stat])
+			best_player_name, best_player = max(self.players.items(), key=lambda player: player[1].abilities[stat])
 			results[stat] = best_player.abilities[stat]
 
-		results['work_rate'] = np.mean(np.mean(player.defensive_work_rate, player.offensive_work_rate) for _, player in self.players.items())
+		results['work_rate'] = np.mean([np.mean([player.defensive_work_rate, player.attacking_work_rate]) for _, player in self.players.items()])
+		results['name'] = self.name
 		return results
 
 	def w2file(self, wfile):
@@ -115,7 +116,7 @@ class Player:
 			elif work_rate[1] == 'Low':
 				self.defensive_work_rate = 1
 		else:
-			self.offensive_work_rate = 0
+			self.attacking_work_rate = 0
 			self.defensive_work_rate = 0
 
 

@@ -72,9 +72,9 @@ def match_teams(team_data, player_data):
 
     team_df = pd.DataFrame()
     for team in team_data:
-        if team.players != {}:
-            new_row = pd.Series(team.aggregate_stats())
-            team_df.append(new_row)
+        if team_data[team].players != {}:
+            new_row = pd.Series(team_data[team].aggregate_stats())
+            team_df = team_df.append(new_row, ignore_index=True)
 
     return team_df
 
