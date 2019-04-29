@@ -199,7 +199,7 @@ def model_data(choice, data):
 def main():
     fifa_player_df, fifa_team = read_data()
     aggregated_data = match_teams(fifa_team, fifa_player_df)
-    print(aggregated_data)
+    aggregated_data.to_csv('aggregated_data.csv')
 
 
 if __name__ == "__main__":
