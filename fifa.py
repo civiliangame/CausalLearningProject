@@ -33,7 +33,7 @@ dataset. The mapping is incomplete, and may be expanded later.
 """
 def name_mapping(player_data, team_data):
     players = player_data['Club'].drop_duplicates().dropna().to_numpy()
-    teams = team_data[2].drop_duplicates().dropna().to_numpy()
+    teams = np.array([x for x in team_data.keys()])
 
     mapping = {}
     for player_team in players:
@@ -47,7 +47,7 @@ def name_mapping(player_data, team_data):
                 if team_team not in mapping:
                     mapping[team_team] = player_team
 
-        return mapping
+    return mapping
 
 
 """
@@ -139,6 +139,7 @@ def model_data(choice, data):
 def main():
     fifa_player_df, fifa_team = read_data()
     aggregated_data = match_teams(fifa_team, fifa_player_df)
+    print(aggregated_data)
 
 
 if __name__ == "__main__":

@@ -46,6 +46,8 @@ class Team:
 		for stat in Player.stat_names:
 			best_player_name, best_player = max(self.players.items(), key=lambda name, player: player.abilities[stat])
 			results[stat] = best_player.abilities[stat]
+
+		results['work_rate'] = np.mean(np.mean(player.defensive_work_rate, player.offensive_work_rate) for _, player in self.players.items())
 		return results
 
 	def w2file(self, wfile):
@@ -84,7 +86,7 @@ class Player:
 			self.abilities[stat] = stats[stat]
 
 		# Get whether player is goalkeeper or not
-		if stats['Position'] is 'GK':
+		if stats['Position'] == 'GK':
 			self.goalkeeper = True
 		else:
 			self.goalkeeper = False
@@ -93,22 +95,28 @@ class Player:
 		self.position = stats['Position']
 
 		# Get player's work rate
-		work_rate = stats['Work Rate']
+		work_rate = str(stats['Work Rate'])
 		work_rate = work_rate.split("/")
 
-		if work_rate[0] is 'High':
-			self.attacking_work_rate = 3
-		elif work_rate[0] is 'Medium':
-			self.attacking_work_rate = 2
-		elif work_rate[0] is 'Low':
-			self.attacking_work_rate = 1
+		if len(work_rate) > 1:
+			work_rate[0] = work_rate[0].strip()
+			if work_rate[0] == 'High':
+				self.attacking_work_rate = 3
+			elif work_rate[0] == 'Medium':
+				self.attacking_work_rate = 2
+			elif work_rate[0] == 'Low':
+				self.attacking_work_rate = 1
 
-		if work_rate[1] is 'High':
-			self.defensive_work_rate = 3
-		elif work_rate[1] is 'Medium':
-			self.defensive_work_rate = 2
-		elif work_rate[1] is 'Low':
-			self.defensive_work_rate = 1
+			work_rate[1] = work_rate[1].strip()
+			if work_rate[1] == 'High':
+				self.defensive_work_rate = 3
+			elif work_rate[1] == 'Medium':
+				self.defensive_work_rate = 2
+			elif work_rate[1] == 'Low':
+				self.defensive_work_rate = 1
+		else:
+			self.offensive_work_rate = 0
+			self.defensive_work_rate = 0
 
 
 def add_team(teams, name, league):
