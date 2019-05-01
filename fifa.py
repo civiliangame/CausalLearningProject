@@ -42,11 +42,22 @@ def name_mapping(player_data, team_data):
         if player_team in teams:
             mapping[player_team] = player_team
 
-        # Add any matches after eliminating accents
         for team_team in teams:
+            # Add any matches after eliminating accents
             if uni.unidecode(team_team) == uni.unidecode(player_team):
                 if team_team not in mapping:
-                    mapping[team_team] = player_team
+                    mapping[player_team] = team_team
+
+            # Add any matches after adding FC or variants
+            if team_team + " FC" == player_team or "FC " + team_team == player_team \
+            or team_team + " CF" == player_team or "CF " + team_team == player_team \
+            or player_team + " CF" == team_team or "CF " + player_team == team_team \
+            or player_team + " FC" == team_team or "FC " + player_team == team_team \
+            or team_team + " AC" == player_team or "AC " + team_team == player_team \
+            or team_team + " CA" == player_team or "CA " + team_team == player_team \
+            or player_team + " CA" == team_team or "CA " + player_team == team_team \
+            or player_team + " AC" == team_team or "AC " + player_team == team_team:
+                mapping[player_team] = team_team
 
     return mapping
 
@@ -116,84 +127,6 @@ def bin_data(num_bins, data):
                 binned_data[i] = bin_val[j]
 
     return bin_val, binned_data
-
-
-"""
-Tunes and fits a logistic regression model using sklearn. Returns a fit model that can give probabilities
-"""
-def logreg(data):
-    param_grid = {'C':[.5, 1., 5., 10.], 'tol':[1e-6, 1e-4, 1e-2]}
-    #maximum power
-    tuning_results = GridSearchCV(LogisticRegression(), param_grid, n_jobs=-1).fit(data.drop('win_rate'), data['win_rate'])
-    print('Best logreg parameters: %s' % (tuning_results.best_params_))
-    return tuning_results.best_estimator_
-
-
-"""
-Least Mean Square Error
-"""
-def lmse(data_true, data_pred):
-    x = mean_squared_error(data_true, data_pred)
-    return x
-
-
-
-"""
-IP weighting
-"""
-def ip_weighting(pop_data, used_stat, stat_bins, numerator_prob):
-
-    # Calculate weight
-    '''
-    Pseudocode:
-        1. Create a new array to hold errything
-        2. Condtion on League
-            -> get p(league)
-        3. Condition on work rate
-            -> p(Work Rate)
-            -> p(Work Rate | League)
-        4. Condition on statistic bins
-            -> p(stat) = 1
-        5. for each statisticample, the statement data[‘first_name’] == ‘Antonio’] produces a Pandas Series with a T
-            -> mult. total by p(outcome)
-            -> weight = p_we_want / p(a|covariates)
-    '''
-    # IP will have enough rows to hold the entire population * num unique work rates * num unique leagues
-    leagues = pop_data.league.unique()
-    rates = pop_data.work_rate.unique()
-    ip = np.empty(pop.shape[0] * leagues.shape[0] * rates.shape[0], 3)
-
-    index_count = 0
-    # Condition on leagues
-    for lg in leagues:
-        lg_data = pop_data.loc[pop_data['league'] == lg]
-
-        # Condition on work rate
-        for rt in rates:
-            rt_data = lg_data.loc[lg_data['work_rate'] == rt]
-            ip[index_count] = j
-            index_count += 1
-
-
-    return
-
-
-"""
-Call either LMSE or Logistic Regression models
-
-Arguments:
-    choice      model to use
-    data        FIFA full dataset (Pandas dataframe)
-"""
-def model_data(choice, data):
-    if choice is 'logreg':
-        logreg(data)
-    elif choice is 'lmse':
-        lmse(data)
-    else:
-        print("There's a problem with your model, sir/ma'am")
-
-    return
 
 
 def main():
