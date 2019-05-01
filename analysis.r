@@ -36,7 +36,7 @@ unique_leagues <- data.raw$league %>% unique()
 df.league <- data.frame(X = data.raw$X) #adds in the X as placeholder for number of desired columns
 for(i in 1:length(unique_leagues)){
   df.league %<>% mutate(as.numeric(data.raw$league == unique_leagues[i])) #adds the new data column
-  names(df.league)[i+1] <- i #gives numerical names for placeholder
+  names(df.league)[i] <- i #gives numerical names for placeholder
 }
 #puts in the actual league names
 names(df.league) <- c( "X",
@@ -164,7 +164,7 @@ binom <- models.binom[[1]]
 
 g <- gauss[[2]]
 
-v <- predict(g)
+v <- predict(g, newdata = as.data.frame(1))
 v2 <- as.data.frame(v)
 
 plot(df.reduced$win_num, v2$link)
