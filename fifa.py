@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import team_stats
 import unidecode as uni
+from team_stats import Player
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error
@@ -89,45 +90,6 @@ def match_teams(team_data, player_data):
             team_df = team_df.append(new_row, ignore_index=True)
 
     return team_df
-
-
-"""
-Determines the values associated with each bin (in the histogram) of the work rate
-
-Arguments:
-    num_bins        number of bins for the histogram
-    data            player data (continuous) in the team (Python list or NumPy array)
-
-Return:
-    bin_val         values (average of the edges of the bin) corresponding to each bin (NumPy array)
-    binned_data     binned player data (continuous --> nominal) in the team (NumPy array)
-"""
-def bin_data(num_bins, data):
-    np_data = data
-
-    # If data is a Python list, convert it to NumPy array
-    if isinstance(data, list):
-        np_data = np.array(data)
-
-    # Make histogram from data to get histogram bins
-    hist, bin_edges = np.histogram(np_data, bins=num_bins)
-    bin_val = np.zeros(bin_edges.size - 1)
-    for i in range(bin_edges.size - 1):
-        bin_val[i] = (bin_edges[i] +  bin_edges[i + 1]) / 2
-
-    # Convert data (continuous) to their corresponding bin (nominal) values
-    binned_data = np.zeros(np_data.size)
-    for i in range(np_data.size):
-        for j in range(bin_edges.size - 1):
-            if bin_edges[j] < np_data[i] and np_data[i] <= bin_edges[j + 1]:
-                binned_data[i] = bin_val[j]
-
-            # Edge case for left-most bin
-            if j is 0 and bin_edges[j] == np_data[i]:
-                binned_data[i] = bin_val[j]
-
-    return bin_val, binned_data
-
 
 def main():
     fifa_player_df, fifa_team = read_data()
