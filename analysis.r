@@ -85,13 +85,6 @@ for(i in 2:35){
 
 
 
-
-
-
-
-
-
-
 ########################################################################################################################
 #################################################                       ################################################
 ################################################# IP WEIGHTING FUNCTION ################################################
@@ -158,17 +151,41 @@ for(i in 2:35){
   models.binom %<>%list.append(msm_gen(df.reduced, skillCol = skillCol, "binomial"))
 }
 
-
-gauss <- models.gauss[[2]]
-binom <- models.binom[[1]]
-
-g <- gauss[[2]]
-
-v <- predict(g, newdata = as.data.frame(1))
-v2 <- as.data.frame(v)
-
-plot(df.reduced$win_num, v2$link)
- 
+########################################################################################################################
+#####################################                                  #################################################
+#####################################          CAUSAL ANALYSIS         #################################################
+#####################################                                  #################################################
+########################################################################################################################
+causality <- function(myModel) {
+  exList <- list()
+  for (i in 1:length(myModel))
+  {
+    #print(models.gauss[[i]][[2]][1])
+    # get our values of interest
+    untreated <- as.double(myModel[[i]][[2]]$coefficients[1])
+    treated <- untreated + as.double(myModel[[i]][[2]]$coefficients[2])
+    expected <- treated - untreated
+    
+    # get the expected difference
+    exList <- list.append(exList, expected)
+  }
   
-  
-  
+  exList <- unlist(exList)
+  mInd <- which.max(exList)
+  mVal <- exList[mInd]
+  return (list(exList, mInd))
+}
+
+gCaus <- causality(models.gauss)
+bCaus <- causality(models.binom)
+
+# gauss <- models.gauss[[2]]
+# binom <- models.binom[[1]]
+
+# g <- gauss[[2]]
+# 
+# v <- predict(g, newdata = as.data.frame(1))
+# v2 <- as.data.frame(v)
+# 
+# plot(df.reduced$win_num, v2$link)
+# 
