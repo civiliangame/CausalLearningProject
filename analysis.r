@@ -137,7 +137,7 @@ msm_gen <- function(df, skillCol, modelName = "binomial"){
 ########################################################################################################################
 #####################################                                  #################################################
 #####################################  ANALYSIS OF IP WEIGHTED MODELS  #################################################
-#####################################                                  #################################################
+#####################################         (Survey Style)           #################################################
 ########################################################################################################################
 
 #for loop over different skills
@@ -153,6 +153,67 @@ for(i in 2:35){
 
 ########################################################################################################################
 #####################################                                  #################################################
+#####################################  ANALYSIS OF IP WEIGHTED MODELS  #################################################
+#####################################       (The Right Style)          #################################################
+########################################################################################################################
+
+rs_msm_gen <- function(df, skillCol, modelName = "binomial"){
+  #ipweight
+  df %<>% mutate(skillCol)
+  if(modelName == "binomial")
+    {
+    ipw.model <- ipwpoint(exposure = skillCol, family = "binomial",
+                          link = "logit",
+                          numerator = ~1, 
+                          denominator = ~ EnglishLeagueOne+ MajorLeagueSoccer+ UEFAEuropaLeague+ SpanishPrimeraDivision+
+                            ItalySerieA+ DutchEredivisie+ TurkishTurkcellSuperLig+ ArgentinaPrimeraDivision+
+                            FrenchLigue1+ SpanishSegundaDivision+ GermanBundesliga+ PortugueseLiga+
+                            SouthAfricanABSAPremierLeague+ BrasileiroSerieA+ UEFAChampionsLeague+ work_rate,
+                          data = df
+    )
+    
+    rs_msm <- glm(win_num ~ skillCol, family = binomial(link="logit"), df, weights = ipw.model$ipw.weights)
+  } 
+  else if(modelName == "gaussian")
+    {
+    ipw.model <- ipwpoint(exposure = skillCol, family = "gaussian",
+                          numerator = ~1, 
+                          denominator = ~ EnglishLeagueOne+ MajorLeagueSoccer+ UEFAEuropaLeague+ SpanishPrimeraDivision+
+                            ItalySerieA+ DutchEredivisie+ TurkishTurkcellSuperLig+ ArgentinaPrimeraDivision+
+                            FrenchLigue1+ SpanishSegundaDivision+ GermanBundesliga+ PortugueseLiga+
+                            SouthAfricanABSAPremierLeague+ BrasileiroSerieA+ UEFAChampionsLeague+ work_rate,
+                          data = df
+    )
+    
+    rs_msm <- glm(win_num ~ skillCol, family = gaussian, df, weights = ipw.model$ipw.weights)
+  }
+  
+  #ipwsummary
+  ipw.summary <- summary(ipw.model$ipw.weights)
+  
+  #coefficients
+  coef <- coef(rs_msm)
+  
+  #confidence interval
+  confint <- confint(rs_msm)
+  
+  return (list(ipw.model, rs_msm, coef, confint))
+}
+
+#for loop over different skills
+rs_gauss <- list()
+rs_binom <- list()
+
+#rs_msm_gen(df.gauss, skillCol = df.reduced[,2], "gaussian")
+
+for(i in 2:35){
+   skillCol <- df.reduced[,i]
+   rs_gauss %<>%list.append(rs_msm_gen(df.gauss, skillCol = skillCol, "gaussian"))
+   rs_binom %<>%list.append(rs_msm_gen(df.reduced, skillCol = skillCol, "binomial"))
+}
+
+########################################################################################################################
+#####################################                                  #################################################
 #####################################          CAUSAL ANALYSIS         #################################################
 #####################################                                  #################################################
 ########################################################################################################################
@@ -162,10 +223,12 @@ causality <- function(myModel) {
   {
     #print(models.gauss[[i]][[2]][1])
     # get our values of interest
-    untreated <- as.double(myModel[[i]][[2]]$coefficients[1])
-    treated <- untreated + as.double(myModel[[i]][[2]]$coefficients[2])
-    expected <- treated - untreated
+    #untreated <- as.double(myModel[[i]][[2]]$coefficients[1])
+    #treated <- untreated + as.double(myModel[[i]][[2]]$coefficients[2])
+    #expected <- treated - untreated
     
+    # In our case, expected value is just the slope of the line
+    expected <- as.double(myModel[[i]][[2]]$coefficients[2])
     # get the expected difference
     exList <- list.append(exList, expected)
   }
@@ -176,16 +239,18 @@ causality <- function(myModel) {
   return (list(exList, mInd))
 }
 
-gCaus <- causality(models.gauss)
-bCaus <- causality(models.binom)
+gCausSvy <- causality(models.gauss)
+bCausSvy <- causality(models.binom)
+
+gCaus <- causality(rs_gauss)
+bCaus <- causality(rs_binom)
 
 # gauss <- models.gauss[[2]]
 # binom <- models.binom[[1]]
-
+#
 # g <- gauss[[2]]
-# 
 # v <- predict(g, newdata = as.data.frame(1))
 # v2 <- as.data.frame(v)
-# 
+#
 # plot(df.reduced$win_num, v2$link)
-# 
+
