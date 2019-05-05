@@ -74,7 +74,6 @@ for(i in 2:35){
   
   # greater than mean gets 1
   change[change > avg] <- 101
-  
   # less mean gets 0
   change[change <= avg] <- 0
   
@@ -244,6 +243,47 @@ bCausSvy <- causality(models.binom)
 
 gCaus <- causality(rs_gauss)
 bCaus <- causality(rs_binom)
+
+############################################
+################# PLOTTING #################
+############################################
+
+# GLM: Gaussian vs Binomial Models
+gData <- data.frame(type=matrix("GGLM", ncol=1, nrow=34), xPoint=1:34, yPoint=gCaus[[1]])
+bData <- data.frame(type=matrix("LGLM", ncol=1, nrow=34), xPoint=1:34, yPoint=bCaus[[1]])
+gbData <- rbind(gData, bData)
+p <- ggplot(data = gbData,
+            mapping = aes(x = xPoint, y = yPoint, color=type))
+
+
+p + geom_point() + labs(x = "x", y = "GLM: Expected Difference", title = "GLM Model")
+
+# Survey: Gaussian vs Bionmial Models
+gSvyData <- data.frame(type=matrix("GSVY", ncol=1, nrow=34), xPoint=1:34, yPoint=gCausSvy[[1]])
+bSvyData <- data.frame(type=matrix("LSVY", ncol=1, nrow=34), xPoint=1:34, yPoint=bCausSvy[[1]])
+gbSvyData <- rbind(gSvyData, bSvyData)
+
+s <- ggplot(data = gbSvyData,
+            mapping = aes(x = xPoint, y = yPoint, color=type))
+
+s + geom_point() + labs(x = "x", y = "Svy: Expected Difference", title = "Survey Model")
+
+
+# GLM vs Survey for Gaussian Distro
+gsData <- rbind(gData, gSvyData)
+
+gs <- ggplot(data = gsData,
+             mapping = aes(x = xPoint, y = yPoint, color = type))
+
+gs + geom_point() + labs(x = "x", y = "Expected Difference", title = "Gaussian: GLM vs Survey")
+
+# BLM vs Survey for Binomial Distro
+bsData <- rbind(bSvyData, bData)
+
+bs <- ggplot(data = bsData,
+             mapping = aes(x = xPoint, y = yPoint, color = type))
+
+bs + geom_point() + labs(x = "x", y = "Expected Difference", title = "Binomial: GLM vs Survey")
 
 # gauss <- models.gauss[[2]]
 # binom <- models.binom[[1]]
