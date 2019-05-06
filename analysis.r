@@ -1,4 +1,5 @@
 library("ipw")
+library("ggrepel")
 library("magrittr")
 library("rlist")
 library("tidyverse")
@@ -249,25 +250,32 @@ bCaus <- causality(rs_binom)
 ############################################
 
 # GLM: Gaussian vs Binomial Models
-gData <- data.frame(type=matrix("GGLM", ncol=1, nrow=34), xPoint=1:34, yPoint=gCaus[[1]])
-bData <- data.frame(type=matrix("LGLM", ncol=1, nrow=34), xPoint=1:34, yPoint=bCaus[[1]])
+gData <- data.frame(type=matrix("GGLM", ncol=1, nrow=34), skill=skillNames, xPoint=1:34, yPoint=gCaus[[1]])
+bData <- data.frame(type=matrix("LGLM", ncol=1, nrow=34), skill=skillNames, xPoint=1:34, yPoint=bCaus[[1]])
 gbData <- rbind(gData, bData)
 p <- ggplot(data = gbData,
             mapping = aes(x = xPoint, y = yPoint, color=type))
 
 
-p + geom_point() + labs(x = "x", y = "GLM: Expected Difference", title = "GLM Model")
+glm_mets <- p + geom_point() + 
+  labs(x = "x", y = "GLM: Expected Difference", title = "GLM Model") +
+  geom_text_repel(data = subset(gbData, yPoint == max(yPoint) & (type == "LGLM" | type=="GGLM")),
+                  mapping = aes(label = skill))
+glm_mets
 
 # Survey: Gaussian vs Bionmial Models
-gSvyData <- data.frame(type=matrix("GSVY", ncol=1, nrow=34), xPoint=1:34, yPoint=gCausSvy[[1]])
-bSvyData <- data.frame(type=matrix("LSVY", ncol=1, nrow=34), xPoint=1:34, yPoint=bCausSvy[[1]])
+gSvyData <- data.frame(type=matrix("GSVY", ncol=1, nrow=34), skill= skillNames, xPoint=1:34, yPoint=gCausSvy[[1]])
+bSvyData <- data.frame(type=matrix("LSVY", ncol=1, nrow=34), skill= skillNames, xPoint=1:34, yPoint=bCausSvy[[1]])
 gbSvyData <- rbind(gSvyData, bSvyData)
 
 s <- ggplot(data = gbSvyData,
             mapping = aes(x = xPoint, y = yPoint, color=type))
 
-s + geom_point() + labs(x = "x", y = "Svy: Expected Difference", title = "Survey Model")
-
+svy_mets <- s + geom_point() + 
+  labs(x = "x", y = "Svy: Expected Difference", title = "Survey Model") +
+  geom_text_repel(data = subset(gbSvyData, yPoint == max(yPoint)),
+                  mapping = aes(label = skill))
+svy_mets
 
 # GLM vs Survey for Gaussian Distro
 gsData <- rbind(gData, gSvyData)
@@ -275,7 +283,11 @@ gsData <- rbind(gData, gSvyData)
 gs <- ggplot(data = gsData,
              mapping = aes(x = xPoint, y = yPoint, color = type))
 
-gs + geom_point() + labs(x = "x", y = "Expected Difference", title = "Gaussian: GLM vs Survey")
+gs_graph <- gs + geom_point() + 
+  labs(x = "x", y = "Expected Difference", title = "Gaussian: GLM vs Survey") +
+  geom_text_repel(data = subset(gsData, yPoint == max(yPoint)),
+                  mapping = aes(label = skill))
+gs_graph
 
 # BLM vs Survey for Binomial Distro
 bsData <- rbind(bSvyData, bData)
@@ -283,8 +295,11 @@ bsData <- rbind(bSvyData, bData)
 bs <- ggplot(data = bsData,
              mapping = aes(x = xPoint, y = yPoint, color = type))
 
-bs + geom_point() + labs(x = "x", y = "Expected Difference", title = "Binomial: GLM vs Survey")
-
+bs_graph <- bs + geom_point() + 
+  labs(x = "x", y = "Expected Difference", title = "Binomial: GLM vs Survey") +
+  geom_text_repel(data = subset(bsData, yPoint == max(yPoint)),
+                  mapping = aes(label = skill))
+bs_graph
 # gauss <- models.gauss[[2]]
 # binom <- models.binom[[1]]
 #
