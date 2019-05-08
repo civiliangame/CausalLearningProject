@@ -3,7 +3,7 @@
 
 #### Files and Their Descriptions
 | File Name | File Description |
-|:----------:|:------------------:|
+|----------|------------------|
 | fifa_player.csv | FIFA player data |
 | fifa_team.csv | FIFA team data |
 | team_stats.py | Defines team and player class object definitions and methods |
